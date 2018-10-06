@@ -1,0 +1,92 @@
+<div class="highlight"><pre><span></span><span class="nx">s3</span><span class="p">.</span><span class="nx">createMultipartUpload</span><span class="p">({</span>
+  <span class="nx">Bucket</span><span class="o">:</span> <span class="s1">&#39;better-than-youtube&#39;</span><span class="p">,</span>
+  <span class="nx">Key</span><span class="o">:</span> <span class="nx">filename</span><span class="p">,</span>
+<span class="p">},</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">uploadId</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">UploadId</span><span class="p">;</span>
+  <span class="kd">let</span> <span class="nx">partNumber</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="kd">let</span> <span class="nx">ended</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="kr">const</span> <span class="nx">parts</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="kd">let</span> <span class="nx">chunkSoFar</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+  <span class="kd">function</span> <span class="nx">maybeEndUpload</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">ended</span> <span class="o">&amp;&amp;</span> <span class="nx">parts</span><span class="p">.</span><span class="nx">all</span><span class="p">(</span><span class="nx">p</span> <span class="p">=&gt;</span> <span class="nx">p</span><span class="p">.</span><span class="nx">ETag</span><span class="p">))</span> <span class="p">{</span>
+      <span class="nx">s3</span><span class="p">.</span><span class="nx">completeMultipartUpload</span><span class="p">({</span>
+          <span class="nx">Bucket</span><span class="o">:</span> <span class="s1">&#39;better-than-youtube&#39;</span><span class="p">,</span>
+          <span class="nx">Key</span><span class="o">:</span> <span class="nx">filename</span><span class="p">,</span>
+          <span class="nx">MultipartUpload</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">Parts</span><span class="o">:</span> <span class="nx">parts</span><span class="p">,</span>
+          <span class="p">},</span>
+          <span class="nx">UploadId</span><span class="o">:</span> <span class="nx">uploadId</span><span class="p">,</span>
+        <span class="p">},</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+        <span class="c1">// finally it&#39;s ended...</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="nx">req</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">chunk</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="nx">chunkSoFar</span> <span class="o">+=</span> <span class="nx">chunk</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">chunkSoFar</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="nx">FIVE_MB_IN_BYTES</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// save this off, as it might have changed before</span>
+      <span class="c1">// the response from the upload</span>
+      <span class="kr">const</span> <span class="nx">part</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">PartNumber</span><span class="o">:</span> <span class="nx">partNumber</span><span class="p">,</span>
+        <span class="nx">ETag</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span> <span class="c1">// not yet known</span>
+      <span class="p">};</span>
+      <span class="c1">// we must append now, as there&#39;s no guarantee</span>
+      <span class="c1">// the uploadPart responses will arrive in order.</span>
+      <span class="c1">// we&#39;ll keep a reference to &#39;part&#39; to fill in the</span>
+      <span class="c1">// ETag later.</span>
+      <span class="nx">parts</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">part</span><span class="p">);</span>
+      <span class="nx">s3</span><span class="p">.</span><span class="nx">uploadPart</span><span class="p">({</span>
+        <span class="nx">Body</span><span class="o">:</span> <span class="nx">chunkSoFar</span><span class="p">,</span>
+        <span class="nx">Bucket</span><span class="o">:</span> <span class="s1">&#39;better-than-youtube&#39;</span><span class="p">,</span>
+        <span class="nx">Key</span><span class="o">:</span> <span class="nx">filename</span><span class="p">,</span>
+        <span class="nx">PartNumber</span><span class="o">:</span> <span class="nx">part</span><span class="p">.</span><span class="nx">partNumber</span><span class="p">,</span>
+        <span class="nx">UploadId</span><span class="o">:</span> <span class="nx">uploadId</span><span class="p">,</span>
+      <span class="p">},</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+          <span class="c1">// todo, handle errors by</span>
+          <span class="c1">// calling abortMultipartUpload</span>
+        <span class="p">}</span>
+        <span class="c1">// &#39;part&#39; is already in the array</span>
+        <span class="c1">// but we have a reference to it, so we can</span>
+        <span class="c1">// update with the ETag now that we know it.</span>
+        <span class="nx">part</span><span class="p">.</span><span class="nx">ETag</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">ETag</span><span class="p">;</span>
+        <span class="nx">maybeEndUpload</span><span class="p">();</span>
+      <span class="p">});</span>
+      <span class="nx">chunkSoFar</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+  <span class="nx">req</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">,</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="nx">ended</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">chunkSoFar</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kr">const</span> <span class="nx">part</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">PartNumber</span><span class="o">:</span> <span class="nx">partNumber</span><span class="p">,</span>
+        <span class="nx">ETag</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span> <span class="c1">// not yet known</span>
+      <span class="p">};</span>
+      <span class="c1">// we must append now, as there&#39;s no guarantee</span>
+      <span class="c1">// the uploadPart responses will arrive in order.</span>
+      <span class="c1">// we&#39;ll keep a reference to &#39;part&#39; to fill in the</span>
+      <span class="c1">// ETag later.</span>
+      <span class="nx">parts</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">part</span><span class="p">);</span>
+      <span class="nx">s3</span><span class="p">.</span><span class="nx">uploadPart</span><span class="p">({</span>
+        <span class="nx">Body</span><span class="o">:</span> <span class="nx">chunkSoFar</span><span class="p">,</span>
+        <span class="nx">Bucket</span><span class="o">:</span> <span class="s1">&#39;better-than-youtube&#39;</span><span class="p">,</span>
+        <span class="nx">Key</span><span class="o">:</span> <span class="nx">filename</span><span class="p">,</span>
+        <span class="nx">PartNumber</span><span class="o">:</span> <span class="nx">part</span><span class="p">.</span><span class="nx">partNumber</span><span class="p">,</span>
+        <span class="nx">UploadId</span><span class="o">:</span> <span class="nx">uploadId</span><span class="p">,</span>
+      <span class="p">},</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+          <span class="c1">// todo, handle errors by</span>
+          <span class="c1">// calling abortMultipartUpload</span>
+        <span class="p">}</span>
+        <span class="c1">// &#39;part&#39; is already in the array</span>
+        <span class="c1">// but we have a reference to it, so we can</span>
+        <span class="c1">// update with the ETag now that we know it.</span>
+        <span class="nx">part</span><span class="p">.</span><span class="nx">ETag</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">ETag</span><span class="p">;</span>
+        <span class="nx">maybeEndUpload</span><span class="p">();</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+    <span class="nx">maybeEndUpload</span><span class="p">();</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+</pre></div>

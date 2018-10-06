@@ -1,0 +1,8 @@
+<div class="highlight"><pre><span></span><span class="nx">await</span> <span class="nx">s3</span><span class="p">.</span><span class="nx">putObject</span><span class="p">({</span>
+  <span class="nx">Bucket</span><span class="o">:</span> <span class="s1">&#39;better-than-youtube&#39;</span><span class="p">,</span>
+  <span class="nx">Key</span><span class="o">:</span> <span class="nx">filename</span><span class="p">,</span>
+  <span class="c1">// forward the body of the request</span>
+  <span class="c1">// straight to s3</span>
+  <span class="nx">Body</span><span class="o">:</span> <span class="nx">req</span><span class="p">,</span>
+<span class="p">});</span>
+</pre></div>

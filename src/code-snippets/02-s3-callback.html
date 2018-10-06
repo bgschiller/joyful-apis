@@ -1,0 +1,16 @@
+<div class="highlight"><pre><span></span><span class="nx">app</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/upload&#39;</span><span class="p">,</span> <span class="nx">async</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">filename</span> <span class="o">=</span> <span class="nx">uuid</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;.mp4&#39;</span><span class="p">;</span>
+  <span class="nx">s3</span><span class="p">.</span><span class="nx">putObject</span><span class="p">({</span>
+    <span class="nx">Bucket</span><span class="o">:</span> <span class="s1">&#39;better-than-youtube&#39;</span><span class="p">,</span>
+    <span class="nx">Key</span><span class="o">:</span> <span class="nx">filename</span><span class="p">,</span>
+    <span class="c1">// forward the body of the request straight to s3</span>
+    <span class="nx">Body</span><span class="o">:</span> <span class="nx">req</span><span class="p">,</span>
+  <span class="p">},</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">res</span><span class="p">.</span><span class="nx">sendStatus</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">({</span> <span class="nx">filename</span> <span class="p">});</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+</pre></div>

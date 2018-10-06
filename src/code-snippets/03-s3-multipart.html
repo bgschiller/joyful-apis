@@ -1,0 +1,40 @@
+<div class="highlight"><pre><span></span><span class="nx">s3</span><span class="p">.</span><span class="nx">createMultipartUpload</span><span class="p">({</span>
+  <span class="nx">Bucket</span><span class="o">:</span> <span class="s1">&#39;better-than-youtube&#39;</span><span class="p">,</span>
+  <span class="nx">Key</span><span class="o">:</span> <span class="nx">filename</span><span class="p">,</span>
+<span class="p">},</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">uploadId</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">UploadId</span><span class="p">;</span>
+  <span class="kd">let</span> <span class="nx">partNumber</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="kd">let</span> <span class="nx">parts</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="nx">req</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">chunk</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="nx">s3</span><span class="p">.</span><span class="nx">uploadPart</span><span class="p">({</span>
+      <span class="nx">Body</span><span class="o">:</span> <span class="nx">chunk</span><span class="p">,</span>
+      <span class="nx">Bucket</span><span class="o">:</span> <span class="s1">&#39;better-than-youtube&#39;</span><span class="p">,</span>
+      <span class="nx">Key</span><span class="o">:</span> <span class="nx">filename</span><span class="p">,</span>
+      <span class="nx">PartNumber</span><span class="o">:</span> <span class="nx">partNumber</span><span class="p">,</span>
+      <span class="nx">UploadId</span><span class="o">:</span> <span class="nx">uploadId</span><span class="p">,</span>
+    <span class="p">},</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// todo, handle errors by</span>
+        <span class="c1">// calling abortMultipartUpload</span>
+      <span class="p">}</span>
+      <span class="nx">parts</span><span class="p">.</span><span class="nx">append</span><span class="p">({</span>
+        <span class="nx">PartNumber</span><span class="o">:</span> <span class="nx">partNumber</span><span class="p">,</span>
+        <span class="nx">ETag</span><span class="o">:</span> <span class="nx">data</span><span class="p">.</span><span class="nx">ETag</span><span class="p">,</span>
+      <span class="p">});</span>
+    <span class="p">});</span>
+    <span class="nx">partNumber</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">});</span>
+  <span class="nx">req</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">,</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="nx">s3</span><span class="p">.</span><span class="nx">completeMultipartUpload</span><span class="p">({</span>
+      <span class="nx">Bucket</span><span class="o">:</span> <span class="s1">&#39;better-than-youtube&#39;</span><span class="p">,</span>
+      <span class="nx">Key</span><span class="o">:</span> <span class="nx">filename</span><span class="p">,</span>
+      <span class="nx">MultipartUpload</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">Parts</span><span class="o">:</span> <span class="nx">parts</span><span class="p">,</span>
+      <span class="p">},</span>
+      <span class="nx">UploadId</span><span class="o">:</span> <span class="nx">uploadId</span><span class="p">,</span>
+    <span class="p">},</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+      <span class="c1">// finally it&#39;s ended...</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
