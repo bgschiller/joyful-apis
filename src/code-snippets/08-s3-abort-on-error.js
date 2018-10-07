@@ -5,6 +5,7 @@ s3.createMultipartUpload({
   const uploadId = data.UploadId;
   let partNumber = 0;
   let ended = false;
+  let cancelled = false;
   const parts = [];
   let chunkSoFar = '';
   function maybeCompleteUpload() {
@@ -17,9 +18,26 @@ s3.createMultipartUpload({
           },
           UploadId: uploadId,
         }, (err, data) => {
-        // finally it's ended...
+          if (err) {
+            cancelUpload();
+          }
       });
     }
+  }
+
+  function cancelUpload() {
+    cancelled = true;
+    s3.abortMultipartUpload({
+      Bucket: 'better-than-youtube',
+      Key: filename,
+      UploadId: uploadId,
+    }, (err, data) => {
+      if (err) {
+        console.log(err, err.stack);
+      } else {
+        console.log(data);
+      }
+    });
   }
 
   function appendPart(payload, partNumber) {
@@ -42,8 +60,7 @@ s3.createMultipartUpload({
       UploadId: uploadId,
     }, (err, data) => {
       if (err) {
-        // todo, handle errors by
-        // calling abortMultipartUpload
+        cancelUpload();
       }
       // 'part' is already in the array
       // but we have a reference to it, so we can
@@ -55,7 +72,10 @@ s3.createMultipartUpload({
 
   req.on('data', (chunk) => {
     chunkSoFar += chunk;
-    if (chunkSoFar.length > FIVE_MB_IN_BYTES) {
+    if (
+        chunkSoFar.length > FIVE_MB_IN_BYTES &&
+        !cancelled
+    ) {
       appendPart(chunkSoFar, partNumber);
       chunkSoFar = '';
       partNumber++;
