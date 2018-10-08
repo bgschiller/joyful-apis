@@ -39,7 +39,39 @@
           <li>devetry.com</li>
         </ul>
       </slide>
-      <slide :steps="2">
+      <slide class="title-only">
+        <h2>Orient around use, not internals</h2>
+      </slide>
+      <slide>
+        <div class="vertical-center" v-html="pyUrllib2" />
+      </slide>
+      <slide>
+        <div class="vertical-center" v-html="pyRequests" />
+        <div class="credit">
+          <a href="https://gist.github.com/kennethreitz/973705">
+            https://gist.github.com/kennethreitz/973705
+          </a>
+        </div>
+      </slide>
+      <slide class="title-only">
+        <h2>Move complexity downard</h2>
+      </slide>
+      <slide>
+        imperative DOM manipulation vs Virtual DOM. (maybe Sarah Drasner jQuery vs Vue)
+        (maybe https://bl.ocks.org/mbostock/3808234)
+      </slide>
+      <slide>
+        <div class="blockquote">
+          Something inevitably has to put shit in the DOM. -David Cushman
+        </div>
+      </slide>
+      <slide class="title-only">
+        <h2>Suffer for your API</h2>
+      </slide>
+      <slide>
+        https://github.com/jwt-dotnet/jwt#parsing-decoding-and-verifying-token
+      </slide>
+            <slide :steps="2">
         <div class="by-halves">
           <div class="vertical-center" v-html="s3IdealizedInner" />
           <div v-visible="step >= 2" class="vertical-center smaller-08" v-html="s3AbortOnError" />
@@ -83,38 +115,6 @@
         <h2 v-if="step >= 10" class="floating-header bottom-header">
           Empathy
         </h2>
-      </slide>
-      <slide class="title-only">
-        <h2>Orient around use, not internals</h2>
-      </slide>
-      <slide>
-        <div class="vertical-center" v-html="pyUrllib2" />
-      </slide>
-      <slide>
-        <div class="vertical-center" v-html="pyRequests" />
-        <div class="credit">
-          <a href="https://gist.github.com/kennethreitz/973705">
-            https://gist.github.com/kennethreitz/973705
-          </a>
-        </div>
-      </slide>
-      <slide class="title-only">
-        <h2>Move complexity downard</h2>
-      </slide>
-      <slide>
-        imperative DOM manipulation vs Virtual DOM. (maybe Sarah Drasner jQuery vs Vue)
-        (maybe https://bl.ocks.org/mbostock/3808234)
-      </slide>
-      <slide>
-        <div class="blockquote">
-          Something inevitably has to put shit in the DOM. -David Cushman
-        </div>
-      </slide>
-      <slide class="title-only">
-        <h2>Suffer for your API</h2>
-      </slide>
-      <slide>
-        https://github.com/jwt-dotnet/jwt#parsing-decoding-and-verifying-token
       </slide>
     </div>
   </div>

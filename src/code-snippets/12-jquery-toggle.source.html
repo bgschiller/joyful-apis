@@ -1,0 +1,18 @@
+<div id="app">
+  <button type="button" id="toggle" aria-expanded="false">
+    Toggle Panel
+  </button>
+  <p class="hello">hello</p>
+</div>
+
+<script>
+$(function() {
+  $('#toggle').on('click', function() {
+    $('.hello').toggle();
+    $(this).attr(
+      'aria-expanded',
+      ($(this).attr('aria-expanded') == "false" ? true : false),
+    );
+  });
+});
+</script>
