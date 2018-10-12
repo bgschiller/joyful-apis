@@ -1,4 +1,5 @@
 module.exports = {
+  baseUrl: '/lets-build-oauth/',
   chainWebpack: config => {
     config.module
       .rule('html')
