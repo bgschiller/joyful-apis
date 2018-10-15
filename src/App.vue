@@ -89,7 +89,7 @@
         <h2>On the other hand...</h2>
       </slide>
       <slide>
-        <div class="img-contain" style="background-image: url(/images/i_dont_care.jpg)" />
+        <div class="img-contain" style="background-image: url(/joyful-apis/images/i_dont_care.jpg)" />
       </slide>
       <slide :steps="10">
         <h2 v-if="step >= 9" class="floating-header">
@@ -166,7 +166,7 @@ export default {
   color: #2c3e50;
 }
 .eg-slideshow {
-  background-image: url(/images/linen_texture_four_times.jpg);
+  background-image: url(/joyful-apis/images/linen_texture_four_times.jpg);
 }
 .eg-slide {
   background-color: none;

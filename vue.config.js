@@ -1,5 +1,5 @@
 module.exports = {
-  baseUrl: '/lets-build-oauth/',
+  baseUrl: '/joyful-apis/',
   chainWebpack: config => {
     config.module
       .rule('html')
