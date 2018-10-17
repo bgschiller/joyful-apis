@@ -32,8 +32,8 @@
       </slide>
       <slide>
         <h2>Joyful APIs</h2>
-        <ul class="unbulleted center-list left-align">
-          <li>Brian Schiller</li>
+        <ul class="unbulleted center-list left-align white-card">
+          <li class="who-am-i">Brian Schiller</li>
           <li>@bgschiller</li>
           <li>brianschiller.com</li>
           <li>devetry.com</li>
@@ -57,21 +57,55 @@
         <h2>Move complexity downard</h2>
       </slide>
       <slide>
-        imperative DOM manipulation vs Virtual DOM. (maybe Sarah Drasner jQuery vs Vue)
-        (maybe https://bl.ocks.org/mbostock/3808234)
+        <div class="vertical-center smaller-06" v-html="directDomManip" />
       </slide>
       <slide>
-        <div class="blockquote">
-          Something inevitably has to put shit in the DOM. -David Cushman
+        <div class="vertical-center" v-html="vueReactive" />
+      </slide>
+      <slide class="vertical-center">
+        <div class="blockquote white-card">
+          Something inevitably has to put shit in the DOM.
+          <div class="attribution">-David Cushman</div>
         </div>
       </slide>
       <slide class="title-only">
         <h2>Suffer for your API</h2>
       </slide>
       <slide>
-        https://github.com/jwt-dotnet/jwt#parsing-decoding-and-verifying-token
+        <div class="vertical-center" v-html="jwtDotnet" />
+        <div class="credit">
+          <a href="https://github.com/jwt-dotnet/jwt#parsing-decoding-and-verifying-token">
+            https://github.com/jwt-dotnet/jwt#parsing-decoding-and-verifying-token
+          </a>
+        </div>
       </slide>
-            <slide :steps="2">
+      <slide class="vertical-center">
+        <img src="/joyful-apis/images/no1curr.gif" />
+      </slide>
+      <slide>
+        <div class="vertical-center" v-html="jwtDotnetIdealized" />
+      </slide>
+      <slide>
+        <div class="vertical-center" v-html="jwtDotnetStatic" />
+      </slide>
+      <slide class="title-only">
+        <h2>Make common things easy</h2>
+      </slide>
+      <slide>
+        <div class="vertical-center" v-html="pulpAnd" />
+        <div class="credit">
+          <a href="https://github.com/bgschiller/citrus">
+            https://github.com/bgschiller/citrus
+          </a>
+        </div>
+      </slide>
+      <slide>
+        <div class="vertical-center" v-html="citrusAnd" />
+      </slide>
+      <slide class="title-only">
+        <h2>But what about that S3 API?</h2>
+      </slide>
+      <slide :steps="2">
         <div class="by-halves">
           <div class="vertical-center" v-html="s3IdealizedInner" />
           <div v-visible="step >= 2" class="vertical-center smaller-08" v-html="s3AbortOnError" />
@@ -79,7 +113,7 @@
       </slide>
       <slide :steps="4">
         <h2>In Amazon's defense...</h2>
-        <ul class="center-list larger">
+        <ul class="center-list larger white-card">
           <li v-visible="step>=2">fault-tolerant</li>
           <li v-visible="step>=3">parallelizable</li>
           <li v-visible="step>=4">direct map to HTTP</li>
@@ -96,7 +130,7 @@
           Joyful API Design
         </h2>
         <div class="by-halves">
-          <ul class="left-align unbulleted">
+          <ul class="left-align unbulleted white-card">
             <li v-visible="step >= 2" :class="{ stricken: step >= 6 }">Organized according to how it works</li>
             <li v-visible="step >= 3"  :class="{ stricken: step >= 7 }">Left all the complexity</li>
             <li v-visible="step >= 4"  :class="{ stricken: step >= 8 }">Roll-your-own error handling</li>
@@ -106,7 +140,7 @@
             v-html="s3AbortOnError"
             v-if="step <= 4"
           />
-          <ul v-if="step>=5" class="left-align unbulleted">
+          <ul v-if="step>=5" class="left-align unbulleted white-card">
             <li v-visible="step >= 6">Orient around use, not internals</li>
             <li v-visible="step >= 7">Move complexity downward</li>
             <li v-visible="step >= 8">Suffer for your API</li>
@@ -133,6 +167,14 @@ import s3AbortOnError from './code-snippets/08-s3-abort-on-error.html';
 import s3IdealizedInner from './code-snippets/09-s3-idealized-inner.html';
 import pyUrllib2 from './code-snippets/10_urllib2.html';
 import pyRequests from './code-snippets/11_requests.html';
+import directDomManip from './code-snippets/12-direct-DOM-manip.html';
+import vueReactive from './code-snippets/13-vue-reactive.html';
+import jwtDotnet from './code-snippets/14-jwt-dotnet.html';
+import jwtDotnetIdealized from './code-snippets/15-jwt-dotnet-idealized.html';
+import jwtDotnetStatic from './code-snippets/16-jwt-static.html';
+import pulpAnd from './code-snippets/17-pulp-and.html';
+import citrusAnd from './code-snippets/18-citrus-and.html';
+
 
 export default {
   name: 'app',
@@ -150,7 +192,33 @@ export default {
       s3IdealizedInner,
       pyRequests,
       pyUrllib2,
+      directDomManip,
+      vueReactive,
+      jwtDotnet,
+      jwtDotnetIdealized,
+      jwtDotnetStatic,
+      pulpAnd,
+      citrusAnd,
     };
+  },
+  methods: {
+    updateSlides: function () {
+      this.currentSlideIndex = +this.$route.params.slide
+      const step = +this.$route.params.step;
+      this.$nextTick(() => {
+        this.step = step;
+      })
+    },
+    updateURL: function () {
+      this.$router.push(`/${this.currentSlideIndex}/${this.step}`)
+    }
+  },
+  mounted() {
+    this.updateSlides();
+  },
+  watch: {
+    step: 'updateURL',
+    currentSlideIndex: 'updateURL',
   },
 };
 </script>
@@ -170,6 +238,27 @@ export default {
 }
 .eg-slide {
   background-color: none;
+}
+
+.white-card {
+  padding: 20px;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 8px 8px 10px rgb(80, 80, 80);
+
+}
+
+ul.white-card:not(.unbulleted) {
+  padding-left: 60px;
+}
+
+
+.blockquote {
+  justify-self: center;
+  .attribution {
+    width: 100%;
+    text-align: right;
+  }
 }
 
 .smaller-03 {
@@ -206,14 +295,23 @@ export default {
 .by-halves {
   display: flex;
   height: 100vh;
+  justify-content: space-around;
   > * {
     width: 45vw;
     margin: 0 auto;
     align-self: center;
   }
+
   ul.left-align.unbulleted {
-    margin-left: 0;
+    margin-left: 63px;
   }
+  ul {
+    width: 37vw;
+  }
+}
+
+.who-am-i {
+  font-weight: bold;
 }
 
 

@@ -1,0 +1,8 @@
+<div class="highlight"><pre><span></span><span class="n">IJsonSerializer</span> <span class="n">serializer</span> <span class="p">=</span> <span class="k">new</span> <span class="n">JsonNetSerializer</span><span class="p">();</span>
+<span class="n">IDateTimeProvider</span> <span class="n">provider</span> <span class="p">=</span> <span class="k">new</span> <span class="n">UtcDateTimeProvider</span><span class="p">();</span>
+<span class="n">IJwtValidator</span> <span class="n">validator</span> <span class="p">=</span> <span class="k">new</span> <span class="n">JwtValidator</span><span class="p">(</span><span class="n">serializer</span><span class="p">,</span> <span class="n">provider</span><span class="p">);</span>
+<span class="n">IBase64UrlEncoder</span> <span class="n">urlEncoder</span> <span class="p">=</span> <span class="k">new</span> <span class="n">JwtBase64UrlEncoder</span><span class="p">();</span>
+<span class="n">IJwtDecoder</span> <span class="n">decoder</span> <span class="p">=</span> <span class="k">new</span> <span class="n">JwtDecoder</span><span class="p">(</span><span class="n">serializer</span><span class="p">,</span> <span class="n">validator</span><span class="p">,</span> <span class="n">urlEncoder</span><span class="p">);</span>
+
+<span class="kt">var</span> <span class="n">json</span> <span class="p">=</span> <span class="n">decoder</span><span class="p">.</span><span class="n">Decode</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">secret</span><span class="p">,</span> <span class="n">verify</span><span class="p">:</span> <span class="k">true</span><span class="p">);</span>
+</pre></div>

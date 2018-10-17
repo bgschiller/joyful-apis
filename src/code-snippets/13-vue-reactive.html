@@ -1,0 +1,15 @@
+<div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">ul</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;dog-list&quot;</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">li</span> <span class="na">v-for</span><span class="o">=</span><span class="s">&quot;dog in dogs&quot;</span> <span class="na">:key</span><span class="o">=</span><span class="s">&quot;dog&quot;</span><span class="p">&gt;</span>
+    {{ dog }}
+  <span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+  <span class="nx">el</span><span class="o">:</span> <span class="s1">&#39;.dog-list&#39;</span><span class="p">,</span>
+  <span class="nx">data</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">dogs</span><span class="o">:</span> <span class="p">[</span> <span class="s1">&#39;Heidi&#39;</span><span class="p">,</span> <span class="s1">&#39;Mhysa&#39;</span><span class="p">,</span> <span class="s1">&#39;Daisy&#39;</span><span class="p">,</span> <span class="s1">&#39;Leia&#39;</span><span class="p">,</span> <span class="s1">&#39;Sully&#39;</span> <span class="p">],</span>
+  <span class="p">},</span>
+<span class="p">})</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</pre></div>

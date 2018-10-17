@@ -1,0 +1,55 @@
+<ul class="dog-list"></ul>
+
+<script>
+var model = {
+  dogs: [ 'Heidi', 'Mhysa', 'Daisy', 'Leia', 'Sully' ],
+};
+function render(model) {
+  var ul = document.querySelector('.dog-list');
+  // what's currently in the DOM?
+  var currentDogs = {};
+  Array.from(ul.children).forEach((element, ix) => {
+    currentDogs[element.getAttribute('data-dog')] = ix + 1;
+  });
+
+  // re-order existing elements to match current order.
+  var currEl = ul.firstChild;
+  for (var dogIx = 0; dogIx < model.dogs.length; dogIx++) {
+    const dogName = model.dogs[dogIx];
+    const elDogName = currEl && currEl.getAttribute('data-dog');
+
+    if (elDogName === dogName) {
+      // happy path, nothing to do here!
+      currEl = currEl.nextSibling;
+    } else {
+      let correctNode;
+      if (currentDogs[dogName]) {
+        // node is in the list, but in the wrong position
+        correctNode = ul.querySelector(`[data-dog="${dogName}"]`);
+      } else {
+        // node is not in the list. create and insert it here.
+        correctNode = document.createElement('li');
+        newDog.setAttribute('data-dog', dogName);
+        newDog.innerText = dogName;
+      }
+      if (currEl !== null) {
+        ul.insertBefore(correctNode, currEl);
+        // no need to update currEl, since it's already pointing
+        // at one node past dogIx.
+      } else {
+        ul.appendChild(correctNode);
+      }
+    }
+    // loop invariant:
+    // At this point, the ul matches the model up to and including dogIx.
+  }
+
+  // remove any nodes that remain, as they're not part of the model
+  // (these are dogs no longer in our list)
+  while (currEl) {
+    var toRemove = currEl;
+    currEl = currEl.nextSibling;
+    ul.removeChild(toRemove);
+  }
+}
+</script>

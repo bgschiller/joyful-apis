@@ -1,0 +1,14 @@
+<ul class="dog-list">
+  <li v-for="dog in dogs" :key="dog">
+    {{ dog }}
+  </li>
+</ul>
+
+<script>
+new Vue({
+  el: '.dog-list',
+  data: {
+    dogs: [ 'Heidi', 'Mhysa', 'Daisy', 'Leia', 'Sully' ],
+  },
+})
+</script>

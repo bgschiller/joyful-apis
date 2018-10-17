@@ -11,6 +11,7 @@
     "eagle.js": "^0.4.1",
     "highlight.js": "^9.12.0",
     "vue": "^2.5.17",
+    "vue-router": "^3.0.1",
     "vue-visible": "^1.0.2"
   },
   "devDependencies": {
