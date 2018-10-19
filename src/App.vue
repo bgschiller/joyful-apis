@@ -13,9 +13,6 @@
         <div class="vertical-center" v-html="s3Callback" />
       </slide>
       <slide>
-        <div class="vertical-center smaller-03" v-html="s3Multipart" />
-      </slide>
-      <slide>
         <div class="vertical-center smaller-04" v-html="s3SavePartNum" />
       </slide>
       <slide>
@@ -36,8 +33,11 @@
           <li class="who-am-i">Brian Schiller</li>
           <li>@bgschiller</li>
           <li>brianschiller.com</li>
-          <li>devetry.com</li>
         </ul>
+      </slide>
+      <slide class="title-only">
+        <p>slides at:</p>
+        <h2>brianschiller.com/joyful-apis/</h2>
       </slide>
       <slide class="title-only">
         <h2>Orient around use, not internals</h2>
@@ -59,14 +59,15 @@
       <slide>
         <div class="vertical-center smaller-06" v-html="directDomManip" />
       </slide>
-      <slide>
-        <div class="vertical-center" v-html="vueReactive" />
-      </slide>
       <slide class="vertical-center">
         <div class="blockquote white-card">
           Something inevitably has to put shit in the DOM.
           <div class="attribution">-David Cushman</div>
         </div>
+      </slide>
+
+      <slide>
+        <div class="vertical-center" v-html="vueReactive" />
       </slide>
       <slide class="title-only">
         <h2>Suffer for your API</h2>
@@ -125,30 +126,32 @@
       <slide>
         <div class="img-contain" style="background-image: url(/joyful-apis/images/i_dont_care.jpg)" />
       </slide>
-      <slide :steps="10">
-        <h2 v-if="step >= 9" class="floating-header">
+      <slide :steps="12">
+        <h2 v-if="step >= 12" class="floating-header">
           Joyful API Design
         </h2>
         <div class="by-halves">
           <ul class="left-align unbulleted white-card">
-            <li v-visible="step >= 2" :class="{ stricken: step >= 6 }">Organized according to how it works</li>
-            <li v-visible="step >= 3"  :class="{ stricken: step >= 7 }">Left all the complexity</li>
-            <li v-visible="step >= 4"  :class="{ stricken: step >= 8 }">Roll-your-own error handling</li>
+            <li v-visible="step >= 2" :class="{ stricken: step >= 7 }">Organized according to how it works</li>
+            <li v-visible="step >= 3" :class="{ stricken: step >= 8 }">Left all the complexity</li>
+            <li v-visible="step >= 4" :class="{ stricken: step >= 9 }">Roll-your-own error handling</li>
+            <li v-visible="step >= 5" :class="{ stricken: step >= 10 }">A common use case requires lots of code</li>
           </ul>
           <div
             class="vertical-center smaller-08"
             v-html="s3AbortOnError"
-            v-if="step <= 4"
+            v-if="step <= 5"
           />
-          <ul v-if="step>=5" class="left-align unbulleted white-card">
-            <li v-visible="step >= 6">Orient around use, not internals</li>
-            <li v-visible="step >= 7">Move complexity downward</li>
-            <li v-visible="step >= 8">Suffer for your API</li>
+          <ul v-if="step >= 6" class="left-align unbulleted white-card">
+            <li v-visible="step >= 7">Orient around use, not internals</li>
+            <li v-visible="step >= 8">Move complexity downward</li>
+            <li v-visible="step >= 9">Suffer for your API</li>
+            <li v-visible="step >= 10">Make common things easy</li>
           </ul>
         </div>
-        <h2 v-if="step >= 10" class="floating-header bottom-header">
-          Empathy
-        </h2>
+        <p class="floating-header empathy-header" v-visible="step >= 11">
+          Imagine the interface you want to use, then build that
+        </p>
       </slide>
     </div>
   </div>
@@ -282,8 +285,11 @@ ul.white-card:not(.unbulleted) {
 .floating-header {
   position: absolute;
   width: 100%;
-  &.bottom-header {
-    top: 60%;
+  &.empathy-header {
+    top: 80%;
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.2em;
   }
 }
 .credit {
